@@ -2,6 +2,7 @@
 /* Default settings; can be overriden by command line. */
 
 static int topbar = 0;                      /* -b  option; if 0, dmenu appears at bottom     */
+static int fuzzy = 1;                      /* -F  option; if 0, dmenu doesn't use fuzzy matching     */
 static const unsigned int border_width = 2;
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static const char *fonts[] = {
@@ -12,6 +13,8 @@ static const char *colors[SchemeLast][2] = {
 	/*               fg         bg       */
 	[SchemeNorm] = { "#d3d0c8", "#2d2d2d" },
 	[SchemeSel] = {  "#2d2d2d", "#cc99cc" },
+	[SchemeNormHighlight] = { "#cc99cc", "#2d2d2d" },
+	[SchemeSelHighlight] = { "#d3d0c8", "#cc99cc" },
 	[SchemeOut] = {  "#000000", "#00ffff" },
 };
 /* -l option; if nonzero, dmenu uses vertical list with given number of lines */
