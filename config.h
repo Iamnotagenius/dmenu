@@ -2,6 +2,7 @@
 /* Default settings; can be overriden by command line. */
 
 static int topbar = 0;                      /* -b  option; if 0, dmenu appears at bottom     */
+static const unsigned int border_width = 2;
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static const char *fonts[] = {
 	"iosevka:size=14:antialias=true"
