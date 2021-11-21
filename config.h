@@ -2,8 +2,9 @@
 /* Default settings; can be overriden by command line. */
 
 static int topbar = 0;                      /* -b  option; if 0, dmenu appears at bottom     */
+static const unsigned int alpha = 0xD0;
 static int fuzzy = 1;                      /* -F  option; if 0, dmenu doesn't use fuzzy matching     */
-static const unsigned int border_width = 2;
+static const unsigned int border_width = 0;
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static const char *fonts[] = {
 	"iosevka:size=14:antialias=true"
@@ -17,6 +18,13 @@ static const char *colors[SchemeLast][2] = {
 	[SchemeSelHighlight] = { "#d3d0c8", "#cc99cc" },
 	[SchemeOut] = {  "#000000", "#00ffff" },
 };
+
+static const unsigned int alphas[SchemeLast][2] = {
+	[SchemeNorm] = { OPAQUE, alpha },
+	[SchemeSel] = { OPAQUE, alpha },
+	[SchemeOut] = { OPAQUE, alpha },
+};
+
 /* -l option; if nonzero, dmenu uses vertical list with given number of lines */
 static unsigned int lines      = 0;
 
