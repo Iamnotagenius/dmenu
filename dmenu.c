@@ -649,14 +649,13 @@ draw:
 }
 
 static void
-/* See LICENSE file for copyright and license details. */
 buttonpress(XEvent *e)
 {
 	struct item *item;
 	XButtonPressedEvent *ev = &e->xbutton;
 	int x = 0, y = 0, h = bh, w;
 
-	if (ev->window != win)
+	if (ev->window != win) 
 		return;
 
 	/* right-click: exit */
@@ -677,11 +676,13 @@ buttonpress(XEvent *e)
 	   ((!prev || !curr->left) ? TEXTW("<") : 0)) ||
 	   (lines > 0 && ev->y >= y && ev->y <= y + h))) {
 		insert(NULL, -cursor);
+		fputs("First If\n", stderr);
 		drawmenu();
 		return;
 	}
 	/* middle-mouse click: paste selection */
 	if (ev->button == Button2) {
+		fputs("Middle click\n", stderr);
 		XConvertSelection(dpy, (ev->state & ShiftMask) ? clip : XA_PRIMARY,
 		                  utf8, utf8, win, CurrentTime);
 		drawmenu();
@@ -689,6 +690,7 @@ buttonpress(XEvent *e)
 	}
 	/* scroll up */
 	if (ev->button == Button4 && prev) {
+		fputs("Scroll up\n", stderr);
 		sel = curr = prev;
 		calcoffsets();
 		drawmenu();
@@ -696,6 +698,7 @@ buttonpress(XEvent *e)
 	}
 	/* scroll down */
 	if (ev->button == Button5 && next) {
+		fputs("Scroll down\n", stderr);
 		sel = curr = next;
 		calcoffsets();
 		drawmenu();
@@ -703,25 +706,16 @@ buttonpress(XEvent *e)
 	}
 	if (ev->button != Button1)
 		return;
-	if (ev->state & ~ControlMask)
-		return;
 	if (lines > 0) {
 		/* vertical list: (ctrl)left-click on item */
 		w = mw - x;
-		for (item = curr; item != next; item = item->right) {
-			y += h;
-			if (ev->y >= y && ev->y <= (y + h)) {
-				puts(item->text);
-				if (!(ev->state & ControlMask))
-					exit(0);
-				sel = item;
-				if (sel) {
-					sel->out = 1;
-					drawmenu();
-				}
-				return;
-			}
+		puts(sel->text);
+		if (!(ev->state & ControlMask)) {
+			cleanup();
+			exit(0);
 		}
+		if (sel)
+			sel->out = 1;
 	} else if (matches) {
 		/* left-click on left arrow */
 		x += inputw;
@@ -761,6 +755,41 @@ buttonpress(XEvent *e)
 		}
 	}
 }
+
+static void
+mousemove(XEvent *e)
+{
+	struct item *item;
+	XPointerMovedEvent *ev = &e->xmotion;
+	int x = 0, y = 0, h = bh, w;
+
+	if (lines > 0) {
+		w = mw - x;
+		for (item = curr; item != next; item = item->right) {
+			y += h;
+			if (ev->y >= y && ev->y <= (y + h)) {
+				sel = item;
+				calcoffsets();
+				drawmenu();
+				return;
+			}
+		}
+	} else if (matches) {
+		x += inputw + promptw;
+		w = TEXTW("<");
+		for (item = curr; item != next; item = item->right) {
+			x += w;
+			w = MIN(TEXTW(item->text), mw - x - TEXTW(">"));
+			if (ev->x >= x && ev->x <= x + w) {
+				sel = item;
+				calcoffsets();
+				drawmenu();
+				return;
+			}
+		}
+	}
+}
+
 
 static void
 paste(void)
@@ -825,6 +854,9 @@ run(void)
 			exit(1);
 		case ButtonPress:
 			buttonpress(&ev);
+			break;
+		case MotionNotify:
+			mousemove(&ev);
 			break;
 		case Expose:
 			if (ev.xexpose.count == 0)
@@ -927,7 +959,7 @@ setup(void)
 	swa.border_pixel = 0;
 	swa.colormap = cmap;
 	swa.event_mask = ExposureMask | KeyPressMask | VisibilityChangeMask |
-	                 ButtonPressMask;
+	                 ButtonPressMask | PointerMotionMask;
 	win = XCreateWindow(dpy, parentwin, x, y, mw, mh, border_width,
 	                    depth, CopyFromParent, visual,
 	                    CWOverrideRedirect | CWBackPixel | CWBorderPixel | CWColormap | CWEventMask, &swa);
@@ -954,6 +986,8 @@ setup(void)
 	drw_resize(drw, mw, mh);
 	drawmenu();
 }
+
+
 
 static void
 usage(void)
