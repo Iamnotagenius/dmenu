@@ -7,7 +7,8 @@ static int fuzzy = 1;                      /* -F  option; if 0, dmenu doesn't us
 static const unsigned int border_width = 0;
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static const char *fonts[] = {
-	"iosevka:size=14:antialias=true"
+	"Iosevka:size=14:antialias=true",
+    "Noto Color Emoji:antialias=true"
 };
 static const char *prompt      = NULL;      /* -p  option; prompt to the left of input field */
 static const char *colors[SchemeLast][2] = {
