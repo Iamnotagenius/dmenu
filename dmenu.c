@@ -30,7 +30,7 @@
 
 /* enums */
 enum { SchemeNorm, SchemeSel, SchemeNormHighlight, SchemeSelHighlight,
-       SchemeOut, SchemeLast }; /* color schemes */
+       SchemeOut, SchemePrompt, SchemeLast }; /* color schemes */
 
 
 struct item {
@@ -99,15 +99,6 @@ calcoffsets(void)
     for (i = 0, prev = curr; prev && prev->left; prev = prev->left)
         if ((i += (lines > 0) ? bh : MIN(TEXTW(prev->left->text), n)) > n)
             break;
-}
-
-static int
-max_textw(void)
-{
-    int len = 0;
-    for (struct item *item = items; item && item->text; item++)
-        len = MAX(TEXTW(item->text), len);
-    return len;
 }
 
 static void
@@ -200,7 +191,7 @@ drawmenu(void)
     drw_rect(drw, 0, 0, mw, mh, 1, 1);
 
     if (prompt && *prompt) {
-        drw_setscheme(drw, scheme[SchemeSel]);
+        drw_setscheme(drw, scheme[SchemePrompt]);
         x = drw_text(drw, x, 0, promptw, bh, lrpad / 2, prompt, 0);
     }
     /* draw input field */

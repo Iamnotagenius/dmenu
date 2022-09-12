@@ -17,6 +17,7 @@ static const char *colors[SchemeLast][2] = {
 	[SchemeSel] = {  "#2d2d2d", "#cc99cc" },
 	[SchemeNormHighlight] = { "#cc99cc", "#2d2d2d" },
 	[SchemeSelHighlight] = { "#d3d0c8", "#cc99cc" },
+	[SchemePrompt] = { "#cc99cc", "#2d2d2d" },
 	[SchemeOut] = {  "#000000", "#00ffff" },
 };
 
